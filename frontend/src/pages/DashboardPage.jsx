@@ -32,28 +32,36 @@ const DashboardPage = () => {
   const { accounts, loading: accountLoading } = useSelector((state) => state.account);
   const { transactions } = useSelector((state) => state.transaction);
 
- useEffect(() => {
-  if (user && (user.userId || user.id)) {
-    const id = user.userId || user.id;
-    console.log("Fetching accounts for User ID:", id);
+ /// 1. Fetch accounts to get updated balances
+useEffect(() => {
+  const id = user?.userId || user?.id;
+  if (id) {
     dispatch(getUserAccounts(id));
   }
 }, [user, dispatch]);
 
-  useEffect(() => {
-    if (accounts.length > 0) {
-      dispatch(getAccountTransactions({ accountId: accounts[0].accountId, size: 5 }));
-    }
-  }, [accounts, dispatch]);
+// 2. Fetch Transactions for ALL accounts owned by the user
+useEffect(() => {
+  const id = user?.userId || user?.id;
+  if (id) {
+    // Make sure your transactionSlice has a 'getTransactionHistory' thunk 
+    // that accepts a userId or accountId
+    dispatch(getAccountTransactions({ userId: id, page: 0, size: 5 }));
+  }
+}, [user, dispatch, accounts.length]); // Added accounts.length to re-trigger after transfer
 
   const totalBalance = accounts.reduce((sum, account) => sum + (account.balance || 0), 0);
 
   return (
     <MainLayout>
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" sx={{ mb: 1 }}>
+        {/* <Typography variant="h4" sx={{ mb: 1 }}>
           Welcome, {user?.firstName}!
-        </Typography>
+        </Typography> */}
+        <Typography variant="h4" sx={{ fontWeight: 700 }}>
+  {/* Fallback to 0 if transactions is undefined */}
+  {transactions?.length || 0}
+</Typography>
         <Typography variant="body1" color="textSecondary">
           Here's your banking dashboard
         </Typography>
@@ -231,36 +239,39 @@ const DashboardPage = () => {
                 </Button>
               </Box>
 
-              {transactions.length > 0 ? (
-                <List>
-                  {transactions.slice(0, 3).map((transaction) => (
-                    <ListItem key={transaction.id} disableGutters sx={{ mb: 1 }}>
-                      <ListItemAvatar>
-                        <Avatar sx={{ bgcolor: getTransactionStatusColor(transaction.status) }}>
-                          <SendIcon />
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={`${transaction.transactionType}`}
-                        secondary={`${formatDateShort(transaction.createdAt)} • ${formatCurrency(
-                          transaction.amount
-                        )}`}
-                      />
-                      <Chip
-                        label={transaction.transactionStatus}
-                        size="small"
-                        sx={{
-                          backgroundColor: getTransactionStatusColor(transaction.transactionStatus),
-                          color: 'white',
-                        }}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              ) : (
-                <Typography color="textSecondary" variant="body2">
-                  No transactions yet
-                </Typography>
+             {transactions.length > 0 ? (
+  <List>
+    {transactions.slice(0, 3).map((transaction) => (
+      // Use a safe key: transactionId or id
+      <ListItem key={transaction?.transactionId || transaction?.id || Math.random()} disableGutters sx={{ mb: 1 }}>
+        <ListItemAvatar>
+          <Avatar sx={{ bgcolor: getTransactionStatusColor(transaction?.status || transaction?.transactionStatus) }}>
+            <SendIcon />
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          // Safely access transactionType
+          primary={`${transaction?.transactionType || 'Transfer'}`}
+          // Safely pass date to formatDateShort
+          secondary={`${formatDateShort(transaction?.createdAt)} • ${formatCurrency(
+            transaction?.amount || 0
+          )}`}
+        />
+        <Chip
+          label={transaction?.transactionStatus || transaction?.status || 'COMPLETED'}
+          size="small"
+          sx={{
+            backgroundColor: getTransactionStatusColor(transaction?.transactionStatus || transaction?.status),
+            color: 'white',
+          }}
+        />
+      </ListItem>
+    ))}
+  </List>
+) : (
+  <Typography color="textSecondary" variant="body2">
+    No transactions yet
+  </Typography>
               )}
             </CardContent>
           </Card>

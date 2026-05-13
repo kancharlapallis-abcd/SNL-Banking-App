@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Transaction Entity - Represents a bank transaction
@@ -33,10 +34,12 @@ public class Transaction {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_account_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Account fromAccount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_account_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Account toAccount;
 
     @Positive(message = "Amount must be greater than zero")

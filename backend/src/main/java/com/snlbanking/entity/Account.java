@@ -11,6 +11,8 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.FetchType;
 
 /**
  * Account Entity - Represents a bank account
@@ -37,6 +39,7 @@ public class Account {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "password", "roles"})
     private User user;
 
     @Enumerated(EnumType.STRING)

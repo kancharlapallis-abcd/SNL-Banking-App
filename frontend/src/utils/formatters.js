@@ -19,13 +19,21 @@ export const formatDate = (date) => {
   }).format(new Date(date));
 };
 
-// Format date for display (short format)
-export const formatDateShort = (date) => {
-  return new Intl.DateTimeFormat('en-IN', {
-    year: 'numeric',
+export const formatDateShort = (dateString) => {
+  if (!dateString) return 'N/A';
+  
+  const date = new Date(dateString);
+  
+  // This check prevents the "Invalid time value" RangeError
+  if (isNaN(date.getTime())) {
+    return 'N/A';
+  }
+
+  return date.toLocaleDateString('en-IN', {
+    day: '2-digit',
     month: 'short',
-    day: 'numeric',
-  }).format(new Date(date));
+    year: 'numeric'
+  });
 };
 
 // Validate email

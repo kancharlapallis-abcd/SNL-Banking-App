@@ -75,23 +75,20 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
       referenceNumber: `TXN${Date.now()}`
     };
 
-    // Use unwrap() - it will throw to the catch block if the slice returns rejectWithValue
     const result = await dispatch(transferFunds(payload)).unwrap();
     
-    // If it reaches here, the transfer is 100% successful in DB and Frontend
-    toast.success("Transfer Successful!");
-    resetForm();
+    toast.success(result.message || "Transfer Successful!");
     
-    // Navigate after a short delay
+    // 1. Clear the form
+    resetForm();
+
+    // 2. Wait 1 second so the user sees the success toast, then move
     setTimeout(() => {
-      navigate('/dashboard'); 
+      navigate('/dashboard');
     }, 1000);
 
   } catch (err) {
-    // If 'err' is an object, it might crash the toast. Ensure it's a string.
-    const message = typeof err === 'string' ? err : "Transaction processing error";
-    toast.error(message);
-    console.error("Transfer Error Detail:", err);
+    toast.error(err || "Transfer failed");
   } finally {
     setSubmitting(false);
   }
