@@ -21,6 +21,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import BillPaymentPage from './pages/BillPaymentPage';
 import LoanPage from './pages/LoanPage';
 import SupportPage from './pages/SupportPage';
+import SettingsPage from './pages/SettingsPage';
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
@@ -109,6 +110,16 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+<Route
+  path="/settings"
+  element={
+    <ProtectedRoute>
+      <SettingsPage />
+    </ProtectedRoute>
+  }
+/>
+
             <Route
               path="/support"
               element={
