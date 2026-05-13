@@ -128,17 +128,22 @@ const billSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(getAccountBillPayments.fulfilled, (state, action) => {
-        state.loading = false;
-        // Handle pagination: data.content for the array, data for pagination info
-        state.bills = action.payload.data.content || action.payload.data;
-        state.pagination = {
-          page: action.payload.data.number || 0,
-          size: action.payload.data.size || 10,
-          totalPages: action.payload.data.totalPages || 0,
-          totalElements: action.payload.data.totalElements || 0
-        };
-      })
+     // src/store/billSlice.js
+
+.addCase(getAccountBillPayments.fulfilled, (state, action) => {
+  state.loading = false;
+  // Deep check: extract the array from Spring Boot's Page object or the raw data
+  const fetchedBills = action.payload?.data?.content || action.payload?.data || action.payload;
+  
+  state.bills = Array.isArray(fetchedBills) ? fetchedBills : [];
+  
+  state.pagination = {
+    page: action.payload?.data?.number || 0,
+    size: action.payload?.data?.size || 10,
+    totalElements: action.payload?.data?.totalElements || 0,
+    totalPages: action.payload?.data?.totalPages || 0
+  };
+})
       .addCase(getAccountBillPayments.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

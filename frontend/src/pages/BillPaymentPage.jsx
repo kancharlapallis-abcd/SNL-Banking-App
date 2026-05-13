@@ -64,12 +64,17 @@ const BillPaymentPage = () => {
     }
   }, [dispatch, user]);
 
-  useEffect(() => {
-    // Fetch bill payments for selected account
-    if (selectedAccount) {
-      dispatch(getAccountBillPayments({ accountId: selectedAccount, page, size: rowsPerPage }));
-    }
-  }, [dispatch, selectedAccount, page, rowsPerPage]);
+ useEffect(() => {
+  // Fetch bill payments for selected account whenever the account changes or page loads
+  if (selectedAccount) {
+    console.log("Refreshing bill history for account:", selectedAccount);
+    dispatch(getAccountBillPayments({ 
+      accountId: selectedAccount, 
+      page: page, 
+      size: rowsPerPage 
+    }));
+  }
+}, [dispatch, selectedAccount, page, rowsPerPage]);
 
   useEffect(() => {
     if (successMessage) {
