@@ -22,7 +22,7 @@ import BillPaymentPage from './pages/BillPaymentPage';
 import LoanPage from './pages/LoanPage';
 import SupportPage from './pages/SupportPage';
 import SettingsPage from './pages/SettingsPage';
-
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -119,7 +119,10 @@ function App() {
     </ProtectedRoute>
   }
 />
-
+<Route path="/login" element={<LoginPage />} />
+<Route path="/register" element={<RegisterPage />} />
+{/* ADD THIS LINE */}
+<Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route
               path="/support"
               element={
