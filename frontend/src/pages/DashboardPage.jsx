@@ -55,13 +55,11 @@ useEffect(() => {
   return (
     <MainLayout>
       <Box sx={{ mb: 4 }}>
-        {/* <Typography variant="h4" sx={{ mb: 1 }}>
-          Welcome, {user?.firstName}!
-        </Typography> */}
-        <Typography variant="h4" sx={{ fontWeight: 700 }}>
-  {/* Fallback to 0 if transactions is undefined */}
-  {transactions?.length || 0}
+    
+       <Typography variant="h4" sx={{ mb: 1, fontWeight: 'bold' }}>
+  Welcome, {user?.firstName || 'User'}! 
 </Typography>
+
         <Typography variant="body1" color="textSecondary">
           Here's your banking dashboard
         </Typography>
@@ -250,12 +248,8 @@ useEffect(() => {
           </Avatar>
         </ListItemAvatar>
         <ListItemText
-          // Safely access transactionType
           primary={`${transaction?.transactionType || 'Transfer'}`}
-          // Safely pass date to formatDateShort
-          secondary={`${formatDateShort(transaction?.createdAt)} • ${formatCurrency(
-            transaction?.amount || 0
-          )}`}
+secondary={`${formatDateShort(transaction?.createdAt)} • ${formatCurrency(transaction?.amount || 0)}`}
         />
         <Chip
           label={transaction?.transactionStatus || transaction?.status || 'COMPLETED'}
