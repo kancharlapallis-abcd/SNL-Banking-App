@@ -112,12 +112,19 @@ const supportSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(submitSupportTicket.fulfilled, (state, action) => {
-        state.loading = false;
-        state.successMessage = 'Support ticket submitted successfully';
-        state.selectedTicket = action.payload.data;
-        state.tickets.push(action.payload.data);
-      })
+    // CHANGE THIS:
+.addCase(submitSupportTicket.fulfilled, (state, action) => {
+  state.loading = false;
+  state.successMessage = 'Support ticket submitted successfully';
+  
+  // Safeguard: Check if data is nested or direct
+  const newTicket = action.payload?.data || action.payload;
+  state.selectedTicket = newTicket;
+  
+  if (newTicket) {
+    state.tickets = [newTicket, ...state.tickets]; // Use spread to keep it at the top
+  }
+})
       .addCase(submitSupportTicket.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
